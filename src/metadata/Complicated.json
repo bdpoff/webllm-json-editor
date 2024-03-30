@@ -1,0 +1,53 @@
+{
+  "roles": [
+    {
+      "name": "Owner",
+      "capabilities": [
+        "SEARCH",
+        "SUSPEND"
+      ]
+    },
+    {
+      "name": "Admin",
+      "capabilities": [
+        "SEARCH",
+        "SUSPEND"
+      ],
+      "approvedBy": [
+        "Owner"
+      ]
+    },
+    {
+      "name": "Approver1",
+      "capabilities": [
+        "SEARCH"
+      ],
+      "approvedBy": [
+        "Owner",
+        "Admin"
+      ]
+    },
+    {
+      "name": "Approver2",
+      "capabilities": [
+        "SEARCH"
+      ],
+      "approvedBy": [
+        "Admin"
+      ]
+    },
+    {
+      "name": "User1",
+      "approvedBy": [
+        "Approver1"
+      ]
+    },
+    {
+      "name": "User2",
+      "approvedBy": [
+        "Approver1",
+        "Approver2"
+      ]
+    }
+  ]
+}

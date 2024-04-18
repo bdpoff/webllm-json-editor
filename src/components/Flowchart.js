@@ -1,10 +1,8 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux'
 import ReactFlow, { 
-  addEdge,
-  ConnectionLineType,
-  useNodesState,
-  useEdgesState } from 'reactflow';
+  ConnectionLineType
+} from 'reactflow';
 import 'reactflow/dist/style.css';
 import dagre from 'dagre';
 
@@ -76,37 +74,11 @@ const LayoutFlow = () => {
   const metadata = useSelector((state) => state.metadata.value);
   const fromMetadata = createFlowChartData(metadata);
   const layoutedMetadata = getLayoutedElements(fromMetadata.nodes, fromMetadata.edges);
-  const [nodes, setNodes, onNodesChange] = useNodesState(layoutedMetadata.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedMetadata.edges);
-
-  const onConnect = useCallback(
-    (params) =>
-      setEdges((eds) =>
-        addEdge({ ...params, type: ConnectionLineType.SmoothStep, animated: true }, eds)
-      ),
-    []
-  );
-  const onLayout = useCallback(
-    (direction) => {
-      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-        nodes,
-        edges,
-        direction
-      );
-
-      setNodes([...layoutedNodes]);
-      setEdges([...layoutedEdges]);
-    },
-    [nodes, edges]
-  );
 
   return (
     <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnect={onConnect}
+      nodes={layoutedMetadata.nodes}
+      edges={layoutedMetadata.edges}
       connectionLineType={ConnectionLineType.SmoothStep}
       fitView/>
   );

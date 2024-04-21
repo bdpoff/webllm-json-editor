@@ -5,12 +5,15 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import dagre from 'dagre';
+import RoleNode from './RoleNode.js'
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
 const nodeWidth = 172;
-const nodeHeight = 36;
+const nodeHeight = 84;
+
+const nodeTypes = { roleNode: RoleNode };
 
 const getLayoutedElements = (nodes, edges, direction = 'TB') => {
   const isHorizontal = direction === 'LR';
@@ -47,7 +50,11 @@ const getLayoutedElements = (nodes, edges, direction = 'TB') => {
 const createFlowChartData = (data) => {
   const nodes = data.roles.map((role) => ({
     id: role.name,
-    data: { label: role.name },
+    type: "roleNode",
+    data: {
+      roleName: role.name,
+      capabilities: role.capabilities
+    },
   }));
 
   let edges = []
@@ -78,6 +85,7 @@ const LayoutFlow = () => {
   return (
     <ReactFlow
       nodes={layoutedMetadata.nodes}
+      nodeTypes={nodeTypes}
       edges={layoutedMetadata.edges}
       connectionLineType={ConnectionLineType.SmoothStep}
       fitView/>

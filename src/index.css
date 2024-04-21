@@ -17,3 +17,11 @@ html,
 #root {
   height: 100%;
 }
+
+.react-flow__node-roleNode {
+  font-size: 14px;
+  background: #eee;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 4px;
+}

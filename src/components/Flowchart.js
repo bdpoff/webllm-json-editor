@@ -79,11 +79,28 @@ const createFlowChartData = (data) => {
 
 const LayoutFlow = () => {
   const metadata = useSelector((state) => state.metadata.value);
+  //const status = useSelector((state) => state.status.value);
   const fromMetadata = createFlowChartData(metadata);
   const layoutedMetadata = getLayoutedElements(fromMetadata.nodes, fromMetadata.edges);
 
+  /*let background 
+  switch(status){
+    case "DONE":
+      background = "#FFFFFF";
+      break;
+    case "GEN":
+      background = "#2AFC38";
+      break;
+    case "ERR":
+      background = "#FC432A"
+      break;
+    default:
+      background = "#000000";
+  }*/
+
   return (
     <ReactFlow
+      ///style={{backgroundColor: {background}}}
       nodes={layoutedMetadata.nodes}
       nodeTypes={nodeTypes}
       edges={layoutedMetadata.edges}

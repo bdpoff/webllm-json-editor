@@ -1,19 +1,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { setMetadata } from '../features/metadata/metadataSlice';
+import { isValidJson } from '../util/Utils';
 
 const JsonView = () => {
   const metadata = useSelector((state) => state.metadata.value);
   const dispatch = useDispatch()
-
-  function isValidJson(input) {
-    try {
-      JSON.parse(input);
-      return true;
-    } catch (err) {
-      return false;
-    }
-  }
 
   function handleInputChange(e) {
     const json = e.target.innerHTML.replace(/\s/g,'');
@@ -23,7 +15,7 @@ const JsonView = () => {
   }
 
   return (
-    <pre contentEditable="true" onInput={handleInputChange} font-size="14px">
+    <pre contentEditable="true" onInput={handleInputChange} fontSize="14px">
       {JSON.stringify(metadata.roles, null, 2)}
     </pre>
   )

@@ -1,26 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as webllm from "@mlc-ai/web-llm";
+import { useDispatch, useSelector } from 'react-redux'
+import { setMetadata } from '../features/metadata/metadataSlice';
+import { isValidJson } from '../util/Utils';
 
-const chat = new webllm.ChatModule();
+const PromptBar = () => {
+  const dispatch = useDispatch()
+  const [prompt, setPrompt] = useState('');
+  const [engine, setEngine] = useState('');
+  const metadata = useSelector((state) => state.metadata.value);
 
-async function main() {
-  const myAppConfig = {
+  const initProgressCallback = (report) => {
+    console.log(report.text)
+  }
+  const appConfig = {
     model_list: [
       {
-        "model_url": "https://huggingface.co/mlc-ai/Llama-2-7b-chat-hf-q4f32_1-MLC/resolve/main/",
-        "local_id": "Llama-2-7b-chat-hf-q4f32_1",
-        "model_lib_url": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/main/Llama-2-7b-chat-hf/Llama-2-7b-chat-hf-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "model_url": "https://huggingface.co/bdpoff/mistral-json-editor-MLC/resolve/q4f32_1/",
+        "model_id": "mistral-json-editor-q4f32_1",
+        "model_lib_url": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/main/Mistral-7B-Instruct-v0.2/Mistral-7B-Instruct-v0.2-q4f16_1-sw4k_cs1k-webgpu.wasm"
       },
     ]
   }
-  const selectedModel = "Llama-2-7b-chat-hf-q4f32_1"
-  await chat.reload(selectedModel, undefined, myAppConfig);
-}
-
-main();
-
-const PromptBar = () => {
-  const [prompt, setPrompt] = useState('');
+  const selectedModel = "mistral-json-editor-q4f32_1"
+  useEffect(() => {
+    async function createEngine(){
+      const eng = await webllm.CreateEngine(
+        selectedModel,
+        { appConfig: appConfig, initProgressCallback: initProgressCallback}
+      )
+      setEngine(eng)
+    }
+    
+    if (!engine){
+      createEngine();
+    }
+  }, [])
+  
 
   const genConfig = {
     presence_penalty: 0.1,
@@ -33,9 +49,27 @@ const PromptBar = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // handle search logic here
     console.log(`TODO: use prompt ${prompt}...`);
-    const reply1 = await chat.generate(prompt, undefined, 1, genConfig);
+    const request = {
+      stream: false,
+      messages: [
+        {}
+      ]
+    }
+    const input = `Instructions: ${prompt}\nInput: ${metadata.toString()}\n: Output:`
+    const reply0 = await engine.chat.completions.create({
+      messages: [
+        {"role": "user", "content": input}
+      ],
+      max_gen_len: 1024,
+      temperature: 0,
+
+    })
+    //const reply1 = await chat.generate(prompt, undefined, 1, genConfig);
+    console.log(reply0)
+    if (isValidJson(reply0)) {
+      dispatch(setMetadata({roles: JSON.parse(reply0)}));
+    }
   }
 
   return (

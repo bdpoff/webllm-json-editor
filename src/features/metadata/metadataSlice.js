@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import Example from '../../metadata/Sample.json';
+import Example from '../../metadata/Example.json';
 
 export const metadataSlice = createSlice({
   name: 'metadata',

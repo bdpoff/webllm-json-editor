@@ -19,17 +19,20 @@ const PromptBar = () => {
     dispatch(undoMetadata())
   }
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(JSON.stringify(metadata).replace(/"/g,"\\\""))
+  }
+
   const handleSubmit = async (event) => {
     dispatch(status.generating());
     event.preventDefault();
-    const input = `<s> Modify the input JSON according to the instructions:\nInstructions: ${prompt}\nInput: ${JSON.stringify(metadata)}\nOutput:`
+    const input = `Modify the input JSON according to the instructions:\nInstructions: ${prompt}\nInput: ${JSON.stringify(metadata)}\nOutput:`
     setPrompt("")
     const payload = {
       prompt: input,
       max_tokens: 1024,
       temperature: 0
     }
-    console.log(process.env.REACT_APP_COMPLETION_URL)
     const request = new Request(process.env.REACT_APP_COMPLETION_URL, {
       method: 'POST',
       body: JSON.stringify(payload),
@@ -40,12 +43,12 @@ const PromptBar = () => {
 
     const response = await fetch(request);
     const data = await response.json();
-    console.log(data)
     if (!data.choices[0].text){
       dispatch(status.error());
       return
     }
     const responseData = data.choices[0].text;
+    console.log(responseData);
     if (isValidJson(responseData)) {
       dispatch(status.done());
       dispatch(setMetadata(JSON.parse(responseData)));
@@ -59,6 +62,7 @@ const PromptBar = () => {
       <input type="text" value={prompt} onChange={handleChange} />
       <button type="submit">Submit</button>
       <button id="undo-button" type="button" onClick={handleUndo}>Undo</button>
+      <button id="copy-button" type="button" onClick={handleCopy}>Copy</button>
     </form>
   );
 }

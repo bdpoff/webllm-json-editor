@@ -8,15 +8,15 @@ export const statusSlice = createSlice({
   reducers: {
     generating: (state) => {
       state.value = "GEN"
-      document.body.style.backgroundColor = "#2AFC38"
+      document.getElementById("bar-indicator").style.backgroundColor = "#2AFC38"
     },
     done: (state) => {
       state.value = "DONE"
-      document.body.style.backgroundColor = "#FFFFFF"
+      document.getElementById("bar-indicator").style.backgroundColor = "#FFFFFF"
     },
     error: (state) => {
       state.value = "ERR"
-      document.body.style.backgroundColor = "#FC432A"
+      document.getElementById("bar-indicator").style.backgroundColor = "#FC432A"
     }
   },
 })

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import { setMetadata, undoMetadata } from '../features/metadata/metadataSlice';
+import { setMetadata } from '../features/metadata/metadataSlice';
 import * as status from '../features/status/statusSlice';
 import { isValidJson } from '../util/Utils';
 
@@ -13,10 +13,6 @@ const PromptBar = () => {
 
   const handleChange = (event) => {
     setPrompt(event.target.value);
-  }
-
-  const handleUndo = () => {
-    dispatch(undoMetadata())
   }
 
   const handleCopy = () => {
@@ -61,7 +57,6 @@ const PromptBar = () => {
     <form onSubmit={handleSubmit} style={{width: 'inherit'}}>
       <input type="text" value={prompt} onChange={handleChange} />
       <button type="submit">Submit</button>
-      <button id="undo-button" type="button" onClick={handleUndo}>Undo</button>
       <button id="copy-button" type="button" onClick={handleCopy}>Copy</button>
     </form>
   );

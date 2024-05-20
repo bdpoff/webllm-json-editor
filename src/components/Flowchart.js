@@ -1,16 +1,18 @@
 import React from 'react';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import ReactFlow, { 
-  ConnectionLineType
+  ConnectionLineType, ControlButton, Controls
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import dagre from 'dagre';
+import { FaPlus, FaUndoAlt } from "react-icons/fa";
 import RoleNode from './RoleNode.js'
+import { addRole, undoMetadata } from '../features/metadata/metadataSlice';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-const nodeWidth = 172;
+const nodeWidth = 192;
 const nodeHeight = 84;
 
 const nodeTypes = { roleNode: RoleNode };
@@ -82,6 +84,20 @@ const LayoutFlow = () => {
   //const status = useSelector((state) => state.status.value);
   const fromMetadata = createFlowChartData(metadata);
   const layoutedMetadata = getLayoutedElements(fromMetadata.nodes, fromMetadata.edges);
+  const dispatch = useDispatch();
+
+  const handleAddRole = (name) => {
+    if (metadata.roles.filter(role => role.name === name).length === 0){
+      dispatch(addRole(name))
+      return
+    } else {
+      handleAddRole(`NewRole${Number(name.substring(7)) + 1}`)
+    }
+  }
+
+  const handleUndo = () => {
+    dispatch(undoMetadata())
+  }
 
   /*let background 
   switch(status){
@@ -105,7 +121,16 @@ const LayoutFlow = () => {
       nodeTypes={nodeTypes}
       edges={layoutedMetadata.edges}
       connectionLineType={ConnectionLineType.SmoothStep}
-      fitView/>
+      fitView>
+      <Controls showZoom={false} showFitView={false} showInteractive={false}>
+        <ControlButton onClick={ () => handleAddRole("NewRole0") } title="Add role">
+          <FaPlus/>
+        </ControlButton>
+        <ControlButton onClick={ () => handleUndo() } title="Undo">
+          <FaUndoAlt/>
+        </ControlButton>
+      </Controls>
+    </ReactFlow>
   );
 };
 

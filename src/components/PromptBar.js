@@ -16,13 +16,13 @@ const PromptBar = () => {
   const appConfig = {
     model_list: [
       {
-        "model_url": "https://huggingface.co/bdpoff/mistral-json-editor-MLC/resolve/q4f32_1/",
-        "model_id": "mistral-json-editor-q4f32_1",
-        "model_lib_url": "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/main/Mistral-7B-Instruct-v0.2/Mistral-7B-Instruct-v0.2-q4f16_1-sw4k_cs1k-webgpu.wasm"
+        "model_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q4f32_1/",
+        "model_id": "llama-3-8B-json-editor-q4f32_1",
+        "model_lib_url": "https://raw.githubusercontent.com/bdpoff/webllm-json-editor/main/llama-3-8B-json-editor-MLC-q4f32_1-webgpu.wasm"
       },
     ]
   }
-  const selectedModel = "mistral-json-editor-q4f32_1"
+  const selectedModel = "llama-3-8B-json-editor-q4f32_1"
   useEffect(() => {
     async function createEngine(){
       const eng = await webllm.CreateEngine(
@@ -36,12 +36,6 @@ const PromptBar = () => {
       createEngine();
     }
   }, [])
-  
-
-  const genConfig = {
-    presence_penalty: 0.1,
-    frequency_penalty: 0.1,
-  }
 
   const handleChange = (event) => {
     setPrompt(event.target.value);
@@ -49,14 +43,7 @@ const PromptBar = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(`TODO: use prompt ${prompt}...`);
-    const request = {
-      stream: false,
-      messages: [
-        {}
-      ]
-    }
-    const input = `Instructions: ${prompt}\nInput: ${metadata.toString()}\n: Output:`
+    const input = `Instructions: ${prompt}\nInput: ${JSON.stringify(metadata)}\n: Output:`
     const reply0 = await engine.chat.completions.create({
       messages: [
         {"role": "user", "content": input}

@@ -19,7 +19,7 @@ const PromptBar = () => {
         "model_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q4f32_1/",
         "model_id": "llama-3-8B-json-editor-q4f32_1",
         "model_lib_url": "https://raw.githubusercontent.com/bdpoff/webllm-json-editor/main/llama-3-8B-json-editor-MLC-q4f32_1-webgpu.wasm"
-      },
+      }
     ]
   }
   const selectedModel = "llama-3-8B-json-editor-q4f32_1"
@@ -50,7 +50,7 @@ const PromptBar = () => {
       ],
       max_gen_len: 1024,
       temperature: 0,
-
+      //response_format: {type: "json_object"}
     })
     //const reply1 = await chat.generate(prompt, undefined, 1, genConfig);
     console.log(reply0)

@@ -15,6 +15,9 @@ const PromptBar = () => {
 
   const initProgressCallback = (report) => {
     console.log(report.text)
+    if (report.text.includes("Finish loading on ")){
+      document.getElementById("prompt-input").placeholder = "Ready"
+    }
   }
   
   const appConfig = {
@@ -54,6 +57,10 @@ const PromptBar = () => {
   }
 
   const handleSubmit = async (event) => {
+    if (engine.currentModelId !== selectedModel){
+      event.preventDefault();
+      return
+    } 
     dispatch(status.generating());
     event.preventDefault();
     const input = `Below is an instruction that describes a modification, paired with a JSON input. Write a JSON response that implements the modification to the JSON input according to the instruction.\n\n### Instruction:\n${prompt}\n\n### Input:\n${JSON.stringify(metadata)}\n\n### Response:\n`
@@ -87,7 +94,7 @@ const PromptBar = () => {
 
   return (
     <form onSubmit={handleSubmit} style={{width: 'inherit'}}>
-      <input type="text" value={prompt} onChange={handleChange} />
+      <input id="prompt-input" type="text" value={prompt} onChange={handleChange} placeholder="Loading..."/>
       <button type="submit">Submit</button>
       <button id="undo-button" type="button" onClick={handleUndo}>Undo</button>
       <button id="copy-button" type="button" onClick={handleCopy}>Copy</button>

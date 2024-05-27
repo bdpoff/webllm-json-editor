@@ -65,7 +65,7 @@ const PromptBar = () => {
         {"role": "user", "content": input}
       ],
       max_gen_len: 1024,
-      temperature: 0,
+      temperature: 0.0,
       //response_format: {type: "json_object"}
     })
     let message = reply.choices[0].message
@@ -75,7 +75,7 @@ const PromptBar = () => {
     message = message.substring(message.indexOf("{"), message.lastIndexOf("}") + 1)
     message = message.replaceAll("\\", "")
     if (isValidJson(message)) {
-      dispatch(setMetadata({roles: JSON.parse(message)}));
+      dispatch(setMetadata(JSON.parse(message)));
     }
   }
 

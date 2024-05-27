@@ -5,7 +5,7 @@ import PromptBar from './components/PromptBar';
 function App() {
   return (
     <div className="App" style={{height: 'inherit'}}>
-      <div style={{height: 'inherit', width: '50%', float: 'left'}}>
+      <div style={{height: 'inherit', width: '70%', float: 'left'}}>
         <Flowchart/>
       </div>
       <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>

@@ -20,29 +20,13 @@ const PromptBar = () => {
   const appConfig = {
     model_list: [
       {
-        "model_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q4f32_1/",
-        "model_id": "llama-3-8B-json-editor-q4f32_1",
-        "model_lib_url": "https://raw.githubusercontent.com/bdpoff/webllm-json-editor/main/llama-3-8B-json-editor-MLC-q4f32_1-webgpu.wasm"
-      },
-      {
-        "model_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q0f32/",
-        "model_id": "llama-3-8B-json-editor-q0f32",
-        "model_lib_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q0f32/llama-3-8B-json-editor-MLC-q0f32-webgpu.wasm"
-      },
-      {
-        "model_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q0f16/",
-        "model_id": "llama-3-8B-json-editor-q0f16",
-        "model_lib_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q0f16/llama-3-8B-json-editor-MLC-q0f16-webgpu.wasm",
-        "required_features": ["shader-f16"]
-      },
-      {
-        "model_url": "https://huggingface.co/bdpoff/phi-3-mini-json-editor-MLC/resolve/q0f32/",
-        "model_id": "phi-3-mini-json-editor-q0f32",
-        "model_lib_url": "https://huggingface.co/bdpoff/phi-3-mini-json-editor-MLC/resolve/q0f32/phi-3-mini-json-editor-MLC-q0f32-webgpu.wasm"
-      },
+        "model_url": "https://huggingface.co/bdpoff/mistral-7B-json-editor-MLC/resolve/q4f32_1/",
+        "model_id": "mistral-7B-json-editor-q4f32_1",
+        "model_lib_url": "https://huggingface.co/bdpoff/mistral-7B-json-editor-MLC/resolve/q4f32_1/mistral-7B-json-editor-MLC-q4f32_1-webgpu.wasm"
+      }
     ]
   }
-  const selectedModel = "llama-3-8B-json-editor-q4f32_1"
+  const selectedModel = "mistral-7B-json-editor-q4f32_1"
   useEffect(() => {
     async function createEngine(){
       const eng = await webllm.CreateEngine(
@@ -72,7 +56,7 @@ const PromptBar = () => {
   const handleSubmit = async (event) => {
     dispatch(status.generating());
     event.preventDefault();
-    const input = `Instructions: ${prompt}\nInput: ${JSON.stringify(metadata)}\n: Output:`
+    const input = `Below is an instruction that describes a modification, paired with a JSON input. Write a JSON response that implements the modification to the JSON input according to the instruction.\n\n### Instruction:\n${prompt}\n\n### Input:\n${JSON.stringify(metadata)}\n\n### Response:\n`
     setPrompt("")
     const reply = await engine.chat.completions.create({
       messages: [

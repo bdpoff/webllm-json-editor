@@ -15,7 +15,7 @@ const JsonView = () => {
   }
 
   return (
-    <pre contentEditable="true" onInput={handleInputChange} fontSize="14px">
+    <pre contentEditable="true" onInput={handleInputChange} style={{fontSize: '14px'}}>
       {JSON.stringify(metadata.roles, null, 2)}
     </pre>
   )

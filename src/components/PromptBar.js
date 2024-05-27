@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import * as webllm from "@mlc-ai/web-llm";
 import { useDispatch, useSelector } from 'react-redux'
-import { setMetadata } from '../features/metadata/metadataSlice';
+import { setMetadata, undoMetadata } from '../features/metadata/metadataSlice';
+import * as status from '../features/status/statusSlice';
 import { isValidJson } from '../util/Utils';
+
+
 
 const PromptBar = () => {
   const dispatch = useDispatch()
   const [prompt, setPrompt] = useState('');
-  const [engine, setEngine] = useState('');
   const metadata = useSelector((state) => state.metadata.value);
 
   const initProgressCallback = (report) => {
     console.log(report.text)
   }
+  
   const appConfig = {
     model_list: [
       {
@@ -52,12 +55,21 @@ const PromptBar = () => {
       createEngine();
     }
   }, [])
-
+  
   const handleChange = (event) => {
     setPrompt(event.target.value);
   }
 
+  const handleUndo = () => {
+    dispatch(undoMetadata())
+  }
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(JSON.stringify(metadata).replace(/"/g,"\\\""))
+  }
+
   const handleSubmit = async (event) => {
+    dispatch(status.generating());
     event.preventDefault();
     const input = `Instructions: ${prompt}\nInput: ${JSON.stringify(metadata)}\n: Output:`
     const reply = await engine.chat.completions.create({
@@ -75,7 +87,10 @@ const PromptBar = () => {
     message = message.substring(message.indexOf("{"), message.lastIndexOf("}") + 1)
     message = message.replaceAll("\\", "")
     if (isValidJson(message)) {
+      dispatch(status.done());
       dispatch(setMetadata(JSON.parse(message)));
+    } else {
+      dispatch(status.error());
     }
   }
 
@@ -83,6 +98,8 @@ const PromptBar = () => {
     <form onSubmit={handleSubmit} style={{width: 'inherit'}}>
       <input type="text" value={prompt} onChange={handleChange} />
       <button type="submit">Submit</button>
+      <button id="undo-button" type="button" onClick={handleUndo}>Undo</button>
+      <button id="copy-button" type="button" onClick={handleCopy}>Copy</button>
     </form>
   );
 }

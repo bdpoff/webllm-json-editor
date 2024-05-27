@@ -9,7 +9,7 @@ function App() {
         <Flowchart/>
       </div>
       <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
-        <div>
+        <div id='bar-indicator'>
           <PromptBar/>
         </div>
         <div style={{maxHeight: '100vh', overflowY: 'scroll'}}>

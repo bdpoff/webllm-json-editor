@@ -10,6 +10,7 @@ import { isValidJson } from '../util/Utils';
 const PromptBar = () => {
   const dispatch = useDispatch()
   const [prompt, setPrompt] = useState('');
+  const [engine, setEngine] = useState('');
   const metadata = useSelector((state) => state.metadata.value);
 
   const initProgressCallback = (report) => {
@@ -21,7 +22,7 @@ const PromptBar = () => {
       {
         "model_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q4f32_1/",
         "model_id": "llama-3-8B-json-editor-q4f32_1",
-        "model_lib_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q4f32_1/llama-3-8B-json-editor-MLC-q4f32_1-webgpu.wasm"
+        "model_lib_url": "https://raw.githubusercontent.com/bdpoff/webllm-json-editor/main/llama-3-8B-json-editor-MLC-q4f32_1-webgpu.wasm"
       },
       {
         "model_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q0f32/",
@@ -72,6 +73,7 @@ const PromptBar = () => {
     dispatch(status.generating());
     event.preventDefault();
     const input = `Instructions: ${prompt}\nInput: ${JSON.stringify(metadata)}\n: Output:`
+    setPrompt("")
     const reply = await engine.chat.completions.create({
       messages: [
         {"role": "user", "content": input}
@@ -80,7 +82,12 @@ const PromptBar = () => {
       temperature: 0.0,
       //response_format: {type: "json_object"}
     })
-    let message = reply.choices[0].message
+    console.log(reply.choices[0].message)
+    if (!reply.choices[0].message){
+      dispatch(status.error());
+      return
+    }
+    let message = reply.choices[0].message.content
     if (message.includes("Output: ")){
       message = message.split("Output: ")[1]
     }

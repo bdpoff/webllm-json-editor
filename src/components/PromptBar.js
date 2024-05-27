@@ -18,8 +18,24 @@ const PromptBar = () => {
       {
         "model_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q4f32_1/",
         "model_id": "llama-3-8B-json-editor-q4f32_1",
-        "model_lib_url": "https://raw.githubusercontent.com/bdpoff/webllm-json-editor/main/llama-3-8B-json-editor-MLC-q4f32_1-webgpu.wasm"
-      }
+        "model_lib_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q4f32_1/llama-3-8B-json-editor-MLC-q4f32_1-webgpu.wasm"
+      },
+      {
+        "model_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q0f32/",
+        "model_id": "llama-3-8B-json-editor-q0f32",
+        "model_lib_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q0f32/llama-3-8B-json-editor-MLC-q0f32-webgpu.wasm"
+      },
+      {
+        "model_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q0f16/",
+        "model_id": "llama-3-8B-json-editor-q0f16",
+        "model_lib_url": "https://huggingface.co/bdpoff/llama-3-8B-json-editor-MLC/resolve/q0f16/llama-3-8B-json-editor-MLC-q0f16-webgpu.wasm",
+        "required_features": ["shader-f16"]
+      },
+      {
+        "model_url": "https://huggingface.co/bdpoff/phi-3-mini-json-editor-MLC/resolve/q0f32/",
+        "model_id": "phi-3-mini-json-editor-q0f32",
+        "model_lib_url": "https://huggingface.co/bdpoff/phi-3-mini-json-editor-MLC/resolve/q0f32/phi-3-mini-json-editor-MLC-q0f32-webgpu.wasm"
+      },
     ]
   }
   const selectedModel = "llama-3-8B-json-editor-q4f32_1"
@@ -44,7 +60,7 @@ const PromptBar = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const input = `Instructions: ${prompt}\nInput: ${JSON.stringify(metadata)}\n: Output:`
-    const reply0 = await engine.chat.completions.create({
+    const reply = await engine.chat.completions.create({
       messages: [
         {"role": "user", "content": input}
       ],
@@ -52,10 +68,14 @@ const PromptBar = () => {
       temperature: 0,
       //response_format: {type: "json_object"}
     })
-    //const reply1 = await chat.generate(prompt, undefined, 1, genConfig);
-    console.log(reply0)
-    if (isValidJson(reply0)) {
-      dispatch(setMetadata({roles: JSON.parse(reply0)}));
+    let message = reply.choices[0].message
+    if (message.includes("Output: ")){
+      message = message.split("Output: ")[1]
+    }
+    message = message.substring(message.indexOf("{"), message.lastIndexOf("}") + 1)
+    message = message.replaceAll("\\", "")
+    if (isValidJson(message)) {
+      dispatch(setMetadata({roles: JSON.parse(message)}));
     }
   }
 

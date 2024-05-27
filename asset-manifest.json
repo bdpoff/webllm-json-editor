@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/webllm-json-editor/static/css/main.648b973a.css",
-    "main.js": "/webllm-json-editor/static/js/main.9d46c207.js",
+    "main.js": "/webllm-json-editor/static/js/main.095016fd.js",
     "index.html": "/webllm-json-editor/index.html",
     "main.648b973a.css.map": "/webllm-json-editor/static/css/main.648b973a.css.map",
-    "main.9d46c207.js.map": "/webllm-json-editor/static/js/main.9d46c207.js.map"
+    "main.095016fd.js.map": "/webllm-json-editor/static/js/main.095016fd.js.map"
   },
   "entrypoints": [
     "static/css/main.648b973a.css",
-    "static/js/main.9d46c207.js"
+    "static/js/main.095016fd.js"
   ]
 }
